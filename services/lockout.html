@@ -86,7 +86,7 @@
             }
             
             /* Hide hero section call buttons on mobile for service pages */
-            section.relative.min-h-screen div.text-white > div.flex.flex-col {
+            section.relative.h-screen div.text-white > div.flex.flex-col {
                 display: none !important;
             }
             
@@ -108,8 +108,8 @@
             }
             
             /* Hero section mobile improvements */
-            section.min-h-screen {
-                min-height: auto !important;
+            section.h-screen {
+                height: 100vh !important;
                 padding-top: 2rem !important;
                 padding-bottom: 2rem !important;
             }
@@ -222,7 +222,7 @@
 
     <main class="flex-grow">
         <!-- ===== START: HERO SECTION ===== -->
-        <section class="relative min-h-screen flex items-start md:items-center overflow-hidden bg-primary">
+        <section class="relative h-screen flex items-start md:items-center overflow-hidden bg-primary">
             <!-- Background Image -->
             <div class="absolute inset-0 overflow-hidden z-0">
                 <!-- Desktop Image -->
