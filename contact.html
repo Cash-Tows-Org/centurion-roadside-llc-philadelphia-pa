@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Centurion Roadside LLC - Philadelphia</title>
     <meta name="description" content="Contact Centurion Roadside LLC for fast, reliable roadside assistance in Philadelphia. Available 24/7 with free quotes.">
+    <link rel="icon" type="image/svg+xml" href="favicon.ico">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -352,9 +353,7 @@
                         <input type="checkbox" name="_honey" value="" style="display:none" tabindex="-1" autocomplete="off">
                         <input type="hidden" name="_subject" value="New Contact Form Submission - Centurion Roadside LLC" />
                         <input type="hidden" name="_captcha" value="false" />
-                        <input type="hidden" name="_next" value="https://centurionroadside.com/contact?success=true" />
-                        <input type="hidden" name="_autoresponse" value="Thank you for contacting Centurion Roadside LLC. We have received your message and will get back to you soon!" />
-                        <input type="hidden" name="_format" value="plain" />
+                        <input type="hidden" name="_template" value="table" />
                         <button type="submit" id="submit-btn" class="w-full mt-5 bg-primary text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg">
                             <span class="relative">Submit Request</span>
                         </button>
@@ -604,7 +603,7 @@
     </div>
 
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9OAUtjT_xm9R5ETIx14GroppEauXZ9Xw&libraries=places"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9OAUtjT_xm9R5ETIx14GroppEauXZ9Xw&libraries=places&callback=initMap"></script>
     <script>
         // Initialize Google Map centered on the service city
         function initMap() {
@@ -662,17 +661,7 @@
             });
         }
         
-        // Initialize map when page loads
-        if (typeof google !== 'undefined' && google.maps) {
-            initMap();
-        } else {
-            // Wait for Google Maps API to load
-            window.addEventListener('load', function() {
-                if (typeof google !== 'undefined' && google.maps) {
-                    initMap();
-                }
-            });
-        }
+        // Map will be initialized by callback when Google Maps API loads
     </script>
     
     <!-- Contact Form Submission Handler & Phone Formatting -->
@@ -808,35 +797,23 @@
                     });
                 })
                 .then(({ response, data, rawText }) => {
-                    // Check for server errors even with 200 status
-                    const hasServerError = data && (data.message === 'Server Error' || data.error === true);
-                    
-                    if (response.ok && !hasServerError) {
-                        // Check if response contains success indicators
-                        const isSuccess = rawText.includes('Thank you') || 
-                                        rawText.includes('success') || 
-                                        response.headers.get('content-type')?.includes('text/html');
+                    // FormSubmit returns 200 OK when submission is successful
+                    // Check if we got a successful response
+                    if (response.ok) {
+                        debugLog('Submission successful', data);
+                        if (messageDiv) {
+                            messageDiv.className = 'mb-4 p-3 rounded-lg text-center text-sm font-medium bg-green-100 text-green-800 border border-green-300';
+                            messageDiv.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
+                            messageDiv.classList.remove('hidden');
+                        }
+                        form.reset();
                         
-                        if (isSuccess) {
-                            debugLog('Submission successful', data);
-                            if (messageDiv) {
-                                messageDiv.className = 'mb-4 p-3 rounded-lg text-center text-sm font-medium bg-green-100 text-green-800 border border-green-300';
-                                messageDiv.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
-                                messageDiv.classList.remove('hidden');
-                            }
-                            form.reset();
-                            
-                            if (messageDiv) {
-                                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                            }
-                        } else {
-                            throw new Error('Unexpected response format from server');
+                        if (messageDiv) {
+                            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         }
                     } else {
-                        debugLog('Submission failed', { status: response.status, data, hasServerError });
-                        const errorMsg = hasServerError 
-                            ? 'The email service is currently experiencing issues. Please try calling us directly at (445) 246-2020 or try submitting again in a few minutes.'
-                            : `Server returned status ${response.status}: ${data?.message || 'Unknown error'}`;
+                        debugLog('Submission failed', { status: response.status, data });
+                        const errorMsg = `Server returned status ${response.status}: ${data?.message || 'Unknown error'}`;
                         throw new Error(errorMsg);
                     }
                 })
