@@ -299,7 +299,7 @@
                             Include your vehicle details, location, and issue. Free quotes available.
                         </p>
                     </div>
-                    <form id="contact-form" action="https://formsubmit.co/flashtowingmn@gmail.com" method="POST" class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
+                    <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
                         <div id="form-message" class="hidden mb-4 p-3 rounded-lg text-center text-sm font-medium"></div>
                         <!-- Debug info (visible in console, hidden on page unless needed) -->
                         <div id="debug-info" class="hidden text-xs text-gray-400 mt-2 p-2 bg-gray-50 rounded border border-gray-200 max-h-40 overflow-y-auto"></div>
@@ -349,11 +349,13 @@
                                 <textarea name="message" id="message" rows="3" placeholder="Describe your situation..." class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 resize-none text-sm"></textarea>
                             </div>
                         </div>
-                        <!-- Honeypot field for spam protection -->
-                        <input type="checkbox" name="_honey" value="" style="display:none" tabindex="-1" autocomplete="off">
-                        <input type="hidden" name="_subject" value="New Contact Form Submission - Centurion Roadside LLC" />
-                        <input type="hidden" name="_captcha" value="false" />
-                        <input type="hidden" name="_template" value="table" />
+                        <!-- Web3Forms Configuration -->
+                        <input type="hidden" name="access_key" value="565017d1-49b5-4c93-9e48-3c9f6cda3df7">
+                        <input type="hidden" name="subject" value="New Contact Form Submission - Centurion Roadside LLC">
+                        <input type="hidden" name="from_name" value="Centurion Roadside Contact Form">
+                        <input type="hidden" name="redirect" value="https://centurionroadside.com/contact?success=true">
+                        <!-- Honeypot spam protection -->
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
                         <button type="submit" id="submit-btn" class="w-full mt-5 bg-primary text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg">
                             <span class="relative">Submit Request</span>
                         </button>
@@ -879,3 +881,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+
