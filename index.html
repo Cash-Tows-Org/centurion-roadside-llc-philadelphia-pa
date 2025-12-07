@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Centurion Roadside LLC - Fast Roadside Help in Philadelphia</title>
     <meta name="description" content="Fast, reliable roadside assistance in Philadelphia. Available 24/7. Call now!">
+    <link rel="icon" type="image/svg+xml" href="favicon.ico">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1162,7 +1163,7 @@
     </div>
 
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9OAUtjT_xm9R5ETIx14GroppEauXZ9Xw&libraries=places"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9OAUtjT_xm9R5ETIx14GroppEauXZ9Xw&libraries=places&callback=initMap"></script>
     <script>
         // Initialize Google Map centered on the service city
         function initMap() {
@@ -1220,17 +1221,7 @@
             });
         }
         
-        // Initialize map when page loads
-        if (typeof google !== 'undefined' && google.maps) {
-            initMap();
-        } else {
-            // Wait for Google Maps API to load
-            window.addEventListener('load', function() {
-                if (typeof google !== 'undefined' && google.maps) {
-                    initMap();
-                }
-            });
-        }
+        // Map will be initialized by callback when Google Maps API loads
     </script>
     <script src="script.js"></script>
   </body>
