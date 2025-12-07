@@ -348,10 +348,13 @@
                                 <textarea name="message" id="message" rows="3" placeholder="Describe your situation..." class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 resize-none text-sm"></textarea>
                             </div>
                         </div>
+                        <!-- Honeypot field for spam protection -->
+                        <input type="checkbox" name="_honey" value="" style="display:none" tabindex="-1" autocomplete="off">
                         <input type="hidden" name="_subject" value="New Contact Form Submission - Centurion Roadside LLC" />
                         <input type="hidden" name="_captcha" value="false" />
-                        <input type="hidden" name="_template" value="box" />
+                        <input type="hidden" name="_next" value="https://centurionroadside.com/contact?success=true" />
                         <input type="hidden" name="_autoresponse" value="Thank you for contacting Centurion Roadside LLC. We have received your message and will get back to you soon!" />
+                        <input type="hidden" name="_format" value="plain" />
                         <button type="submit" id="submit-btn" class="w-full mt-5 bg-primary text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-200 shadow-md hover:shadow-lg">
                             <span class="relative">Submit Request</span>
                         </button>
@@ -738,6 +741,13 @@
                     return;
                 }
                 
+                // Honeypot spam check
+                const honeypot = form.querySelector('input[name="_honey"]');
+                if (honeypot && honeypot.checked) {
+                    debugLog('Spam detected - honeypot field was checked');
+                    return; // Silently reject spam submissions
+                }
+                
                 // Check if we're on localhost
                 const isLocalhost = window.location.hostname === 'localhost' || 
                                    window.location.hostname === '127.0.0.1' ||
@@ -782,31 +792,52 @@
                     
                     return response.text().then(text => {
                         debugLog('Response body', text.substring(0, 500)); // First 500 chars
+                        let jsonData = null;
                         try {
-                            return JSON.parse(text);
+                            // Try to parse JSON from the response
+                            jsonData = JSON.parse(text);
                         } catch (e) {
-                            return { text: text };
+                            // If not JSON, check if response contains error indicators
+                            if (text.includes('Server Error') || text.includes('{"message":"Server Error"}')) {
+                                jsonData = { message: 'Server Error', error: true };
+                            } else {
+                                jsonData = { text: text };
+                            }
                         }
-                    }).then(data => {
-                        return { response, data };
+                        return { response, data: jsonData, rawText: text };
                     });
                 })
-                .then(({ response, data }) => {
-                    if (response.ok) {
-                        debugLog('Submission successful', data);
-                        if (messageDiv) {
-                            messageDiv.className = 'mb-4 p-3 rounded-lg text-center text-sm font-medium bg-green-100 text-green-800 border border-green-300';
-                            messageDiv.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
-                            messageDiv.classList.remove('hidden');
-                        }
-                        form.reset();
+                .then(({ response, data, rawText }) => {
+                    // Check for server errors even with 200 status
+                    const hasServerError = data && (data.message === 'Server Error' || data.error === true);
+                    
+                    if (response.ok && !hasServerError) {
+                        // Check if response contains success indicators
+                        const isSuccess = rawText.includes('Thank you') || 
+                                        rawText.includes('success') || 
+                                        response.headers.get('content-type')?.includes('text/html');
                         
-                        if (messageDiv) {
-                            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        if (isSuccess) {
+                            debugLog('Submission successful', data);
+                            if (messageDiv) {
+                                messageDiv.className = 'mb-4 p-3 rounded-lg text-center text-sm font-medium bg-green-100 text-green-800 border border-green-300';
+                                messageDiv.textContent = 'Thank you! Your message has been sent successfully. We will get back to you soon.';
+                                messageDiv.classList.remove('hidden');
+                            }
+                            form.reset();
+                            
+                            if (messageDiv) {
+                                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
+                        } else {
+                            throw new Error('Unexpected response format from server');
                         }
                     } else {
-                        debugLog('Submission failed - non-OK response', { status: response.status, data });
-                        throw new Error(`Server returned status ${response.status}: ${JSON.stringify(data)}`);
+                        debugLog('Submission failed', { status: response.status, data, hasServerError });
+                        const errorMsg = hasServerError 
+                            ? 'The email service is currently experiencing issues. Please try calling us directly at (445) 246-2020 or try submitting again in a few minutes.'
+                            : `Server returned status ${response.status}: ${data?.message || 'Unknown error'}`;
+                        throw new Error(errorMsg);
                     }
                 })
                 .catch(error => {
