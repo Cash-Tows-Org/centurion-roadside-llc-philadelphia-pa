@@ -4,19 +4,39 @@
 
 Your contact form is using FormSubmit.co to send emails. The "Server Error" you're seeing typically means the email address needs to be activated first.
 
-## Step 1: Activate Your Email Address (REQUIRED)
+## Step 1: Activate Your Email Address (REQUIRED - DO THIS FIRST!)
 
-**This is the most important step!** FormSubmit requires you to confirm your email address before it will send you form submissions.
+**🚨 CRITICAL: FormSubmit will NOT send emails until you verify your email address!**
 
-1. **Check your inbox** at `flashtowingmn@gmail.com` for an email from FormSubmit
-2. **Check your spam/junk folder** - the activation email often goes there
-3. **Click the activation link** in the email to verify your email address
-4. Once activated, you should start receiving form submissions
+FormSubmit requires you to confirm your email address **before** it will send you form submissions. This is a security feature.
 
-If you don't see the activation email:
-- Wait a few minutes and check again
-- Make sure the email address `flashtowingmn@gmail.com` is correct
-- Submit the form again (this will trigger a new activation email)
+### How to Activate:
+
+1. **Submit a test form** on your contact page: https://centurionroadside.com/contact
+   - Fill out and submit the form (use test data)
+   - This triggers FormSubmit to send you an activation email
+
+2. **Check your email inbox** at `flashtowingmn@gmail.com`
+   - Look for an email from FormSubmit (usually within 1-2 minutes)
+   - Subject line may say something like "Confirm your email" or "Activate FormSubmit"
+
+3. **CHECK YOUR SPAM/JUNK FOLDER FIRST!** 
+   - The activation email **often goes to spam** - check there first!
+   - Mark it as "Not Spam" if found there
+
+4. **Click the activation link** in the email
+   - This verifies your email address
+   - You only need to do this ONCE per email address
+
+5. **After activation**, submit another test form to verify it's working
+
+### If You Don't See the Activation Email:
+
+- **Wait 2-3 minutes** - sometimes it takes a moment
+- **Check spam/junk folder** - this is where it usually ends up
+- **Check Gmail's "Promotions" or "Updates" tabs** if using Gmail
+- **Submit the form again** - this will trigger a new activation email
+- **Verify the email address** is correct: `flashtowingmn@gmail.com`
 
 ## Step 2: Check Spam Folder
 
